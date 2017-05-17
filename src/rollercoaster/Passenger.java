@@ -37,21 +37,23 @@ public class Passenger extends Thread {
      * Boarding. Get this passenger in the car.
      *
      * @param car The Roller Coaster car
+     * @throws java.lang.Exception The car is full
      */
-    public void board(Car car) {
-        // Check if the car isn't full
-        if (!car.isFull()) {
+    public void board(Car car) throws Exception {
+        // Check if the car isn't full and if this passenger isn't in the car
+        if (!car.isFull() || !car.getPassengers().contains(this)) {
             this.onBoard = true;
             car.removePassenger(this);
         }
     }
 
     /**
-     * Landing. Get this passenger out the car.
+     * Unboarding. Get this passenger out the car.
      *
      * @param car The Roller Coaster car
+     * @throws java.lang.Exception The car is alredy empty
      */
-    public void unboard(Car car) {
+    public void unboard(Car car) throws Exception {
         // Check if the car is stopped
         if (car.isStopped()) {
             this.onBoard = false;
