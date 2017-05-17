@@ -21,29 +21,42 @@ public class Passenger extends Thread {
      */
     public Passenger() {
         this.standbyTime = 0;
+        this.onBoard = false;
     }
 
     /**
      * Get true if the passenger is on board and false otherwise.
      *
-     * @return If the passenger is on board
+     * @return True if the passenger is on board and false otherwise
      */
     public boolean isOnBoard() {
-        return onBoard;
+        return this.onBoard;
     }
 
     /**
-     * Get this passenger in the car.
+     * Boarding. Get this passenger in the car.
+     *
+     * @param car The Roller Coaster car
      */
-    public void getInTheCar() {
-        this.onBoard = true;
+    public void board(Car car) {
+        // Check if the car isn't full
+        if (!car.isFull()) {
+            this.onBoard = true;
+            car.removePassenger(this);
+        }
     }
 
     /**
-     * Get this passenger out the car.
+     * Landing. Get this passenger out the car.
+     *
+     * @param car The Roller Coaster car
      */
-    public void getOuTheCar() {
-        this.onBoard = false;
+    public void unboard(Car car) {
+        // Check if the car is stopped
+        if (car.isStopped()) {
+            this.onBoard = false;
+            car.removePassenger(this);
+        }
     }
 
     /**
@@ -52,7 +65,7 @@ public class Passenger extends Thread {
      * @return Standby time.
      */
     public long getStandbyTime() {
-        return standbyTime;
+        return this.standbyTime;
     }
 
     /**
@@ -62,13 +75,5 @@ public class Passenger extends Thread {
      */
     public void setStandbyTime(long standbyTime) {
         this.standbyTime = standbyTime;
-    }
-
-    @Override
-    public void run() {
-        //
-        while(true) {
-            //
-        }
     }
 }
