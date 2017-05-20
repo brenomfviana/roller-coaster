@@ -3,25 +3,42 @@
  */
 package rollercoaster;
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class represents the Roller Coaster passenger.
  *
  * @author Breno Viana
- * @version 17/05/2017
+ * @version 20/05/2017
  */
-public class Passenger extends Thread {
+public class Passenger implements Runnable {
 
-    // If the passenger is on board
-    private boolean onBoard;
-    // Standby time
-    private long standbyTime;
+    // Passenger ID
+    private final int id;
+    // Roller Coaster Car
+    private final Car car;
 
     /**
      * Constructor.
+     *
+     * @param id Passenger ID
+     * @param car Roller Coaster car
      */
-    public Passenger() {
-        this.standbyTime = 0;
-        this.onBoard = false;
+    public Passenger(int id, Car car) {
+        this.id = id;
+        this.car = car;
+    }
+
+    /**
+     * Get the passenger ID.
+     *
+     * @return Passenger ID
+     */
+    public int getID() {
+        return this.id;
     }
 
     /**
@@ -30,52 +47,59 @@ public class Passenger extends Thread {
      * @return True if the passenger is on board and false otherwise
      */
     public boolean isOnBoard() {
-        return this.onBoard;
+        return this.car.isInTheCar(this);
     }
 
     /**
      * Boarding. Get this passenger in the car.
-     *
-     * @param car The Roller Coaster car
-     * @throws java.lang.Exception The car is full
      */
-    public void board(Car car) throws Exception {
+    public synchronized void board() {
+        if (this.isOnBoard()) {
+            System.out.println("p " + this.getID());
+        }
         // Check if the car isn't full and if this passenger isn't in the car
-        if (!car.isFull() || !car.getPassengers().contains(this)) {
-            this.onBoard = true;
-            car.removePassenger(this);
+        if (!this.isOnBoard() && this.car.isAllowBoarding()
+                && !this.car.isFull()) {
+            this.car.addPassenger(this);
+            System.out.println("Passenger " + this.getID() + " is on board.");
         }
     }
 
     /**
      * Unboarding. Get this passenger out the car.
-     *
-     * @param car The Roller Coaster car
-     * @throws java.lang.Exception The car is alredy empty
      */
-    public void unboard(Car car) throws Exception {
+    public synchronized void unboard() {
         // Check if the car is stopped
-        if (car.isStopped()) {
-            this.onBoard = false;
-            car.removePassenger(this);
+        if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+            this.car.removePassenger(this);
+            System.out.println("Passenger " + this.getID() + " disembarked.");
         }
     }
 
-    /**
-     * Get the standby time.
-     *
-     * @return Standby time.
-     */
-    public long getStandbyTime() {
-        return this.standbyTime;
-    }
-
-    /**
-     * Set the standby time.
-     *
-     * @param standbyTime New value to standby time
-     */
-    public void setStandbyTime(long standbyTime) {
-        this.standbyTime = standbyTime;
+    @Override
+    public void run() {
+        // Print passenger
+        System.out.println("Passenger " + this.getID());
+        // While the car is working
+        while (this.car.isWorking()) {
+            // If the passenger isn't on board and car allows boarding
+            if (!this.isOnBoard() && this.car.isAllowBoarding()) {
+                this.board();
+            }
+            // If the passenger is on board and car allows unboarding
+            if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+                System.out.println("...");
+                this.unboard();
+            }
+            // 
+            if (!this.isOnBoard() && this.car.isMoving()) {
+                System.out.println("Passenger " + this.getID() + " is waiting.");
+                try {
+                    TimeUnit.SECONDS.sleep((new Random()).nextInt(3) + 1);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 }

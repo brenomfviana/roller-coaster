@@ -25,15 +25,18 @@ public class Handler {
         // Passengers
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        for (int i = 0; i < ((new Random()).nextInt(1) + 2); i++) {
-            passengers.add(new Passenger(i + 1));
+        for (int i = 0; i < ((new Random()).nextInt(1) + 5); i++) {
+            passengers.add(new Passenger(i + 1, car));
         }
         // Runs passengers
-        passengers.stream().forEach((Passenger p) -> p.start());
+        passengers.stream().map((passenger) -> new Thread(passenger)).forEach((t) -> {
+            t.start();
+        });
         // Simulation
-        while (true) {
+        while (car.isWorking()) {
             // Unload
-            if (car.isStopped() && car.isFull()) {
+            if (car.isStopped() && car.isFull() && !car.isReady()
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
             }
@@ -42,14 +45,14 @@ public class Handler {
                 break;
             }
             // Check if the car is empty
-            if (car.isStopped() && car.isEmpty()) {
-                // signal
+            if (car.isStopped() && car.isEmpty() && !car.isReady()
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }
             // Check if the car is ready
-            if (car.isStopped() && car.isFull() && !car.isAllowUnboarding()) {
-                // wait
+            if (car.isStopped() && car.isFull() && car.isReady()
+                    && !car.isAllowUnboarding() && !car.isAllowBoarding()) {
                 // Run the ride
                 car.run();
             }
