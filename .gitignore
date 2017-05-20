@@ -2,3 +2,5 @@
 *.properties
 *.class
 *.form
+*/build/
+*/dist/
