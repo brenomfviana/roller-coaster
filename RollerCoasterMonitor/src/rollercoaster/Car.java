@@ -14,12 +14,12 @@ import java.util.logging.Logger;
  * This class represents the Roller Coaster car.
  *
  * @author Breno Viana
- * @version 17/05/2017
+ * @version 20/05/2017
  */
-public class Car extends Thread {
+public class Car {
 
     // Singleton
-    private static Car instance = new Car(10, 10);
+    private static Car instance = new Car(10, 4);
 
     // Maximum number of rides
     private final int maximumNumberOfRides;
@@ -98,12 +98,42 @@ public class Car extends Thread {
     }
 
     /**
-     * Get true if the car is moving and false otherwise.
+     * Get passengers list.
      *
-     * @return True if the car is moving and false otherwise
+     * @return Passengers list
      */
-    public boolean isMoving() {
-        return this.moving;
+    public List<Passenger> getPassengers() {
+        return this.passengers;
+    }
+
+    /**
+     * Add passenger in the car.
+     *
+     * @param passenger The passenger
+     */
+    public void addPassenger(Passenger passenger) {
+        // Check if this car isn't full
+        if (!this.isFull()) {
+            this.passengers.add(passenger);
+            System.out.println("Passenger " + passenger.getID() + " is on board.");
+        } else {
+            this.allowBoarding = false;
+        }
+    }
+
+    /**
+     * Remove passenger from the car.
+     *
+     * @param passenger The passenger
+     */
+    public void removePassenger(Passenger passenger) {
+        // Check if the car in't empty
+        if (!this.passengers.isEmpty()) {
+            this.passengers.remove(passenger);
+            System.out.println("Passenger " + passenger.getID() + " disembarked.");
+        } else {
+            this.allowUnboarding = false;
+        }
     }
 
     /**
@@ -125,53 +155,30 @@ public class Car extends Thread {
     }
 
     /**
-     * Get passengers list.
-     *
-     * @return Passengers list
-     */
-    public List<Passenger> getPassengers() {
-        return this.passengers;
-    }
-
-    /**
-     * Add passenger in the car.
-     *
-     * @param passenger The passenger
-     * @throws java.lang.Exception The car is full.
-     */
-    public void addPassenger(Passenger passenger) throws Exception {
-        // Check if this car isn't full
-        if (!this.isFull()) {
-            this.passengers.add(passenger);
-        } else {
-            throw new Exception("The car is full, "
-                    + "it's not possible to add passengers.");
-        }
-    }
-
-    /**
-     * Remove passenger from the car.
-     *
-     * @param passenger The passenger
-     * @throws java.lang.Exception The car is already empty
-     */
-    public void removePassenger(Passenger passenger) throws Exception {
-        // Check if the car in't empty
-        if (!this.passengers.isEmpty()) {
-            this.passengers.remove(passenger);
-        } else {
-            throw new Exception("The car is already empty, "
-                    + "it's not possible remove passengers.");
-        }
-    }
-
-    /**
      * Get true if the car is full and false otherwise.
      *
      * @return True if the car is full and false otherwise
      */
     public boolean isFull() {
         return this.capacity == this.passengers.size();
+    }
+
+    /**
+     * Get true if the car is empty and false otherwise.
+     *
+     * @return True if the car is empty and false otherwise
+     */
+    public boolean isEmpty() {
+        return this.passengers.isEmpty();
+    }
+
+    /**
+     * Get true if the car is moving and false otherwise.
+     *
+     * @return True if the car is moving and false otherwise
+     */
+    public boolean isMoving() {
+        return this.moving;
     }
 
     /**
@@ -191,15 +198,15 @@ public class Car extends Thread {
      * rides.
      */
     public boolean isWorking() {
-        return this.maximumNumberOfRides != this.totalRides;
+        return this.maximumNumberOfRides > this.totalRides;
     }
 
     /**
      * Allows passengers to board.
      */
     public void load() {
-        // Check if the car isn't moving
-        if (!this.isMoving()) {
+        // Check if the car is stopped and if the car will still work
+        if (this.isWorking() && this.isStopped()) {
             // Allow boarding
             this.allowBoarding = true;
         }
@@ -209,8 +216,8 @@ public class Car extends Thread {
      * Allows passengers to unboard.
      */
     public void unload() {
-        // Check if the car isn't moving
-        if (!this.isMoving()) {
+        // Check if the car is stopped
+        if (this.isStopped()) {
             // Allow unboarding
             this.allowUnboarding = true;
         }
@@ -219,22 +226,19 @@ public class Car extends Thread {
     /**
      * Run.
      */
-    @Override
     public void run() {
-        // Check if the car is full
-        if (this.isWorking() && this.isFull() && this.isStopped()) {
+        // Check if the car will still work
+        if (this.isWorking()) {
             try {
-                // Prevents boarding and unboarding
-                this.allowUnboarding = false;
-                this.allowBoarding = false;
                 // Starts moving
                 this.moving = true;
                 // Ride
+                System.out.println("Ride started.");
+                this.totalRides++;
                 TimeUnit.SECONDS.sleep((new Random()).nextInt(4000) + 1000);
                 // Stops moving
                 this.moving = false;
-                // Allow unboarding
-                unload();
+                System.out.println("Ride ended.");
             } catch (InterruptedException ex) {
                 Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
             }
