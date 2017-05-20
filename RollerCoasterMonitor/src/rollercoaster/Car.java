@@ -5,6 +5,10 @@ package rollercoaster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents the Roller Coaster car.
@@ -25,6 +29,10 @@ public class Car extends Thread {
     private final int capacity;
     // Is in moving
     private boolean moving;
+    // Allow boarding
+    private boolean allowBoarding;
+    // Allow unboarding
+    private boolean allowUnboarding;
     // List of passengers
     private List<Passenger> passengers;
 
@@ -39,6 +47,8 @@ public class Car extends Thread {
         this.totalRides = 0;
         this.capacity = capacity;
         this.moving = false;
+        this.allowBoarding = false;
+        this.allowUnboarding = false;
         this.passengers = new ArrayList<>();
     }
 
@@ -97,12 +107,30 @@ public class Car extends Thread {
     }
 
     /**
+     * Get true if the car allows boarding and false otherwise.
+     *
+     * @return True if the car allows boarding and false otherwise
+     */
+    public boolean isAllowBoarding() {
+        return this.allowBoarding;
+    }
+
+    /**
+     * Get true if the car allows unboarding and false otherwise.
+     *
+     * @return True if the car allows unboarding and false otherwise
+     */
+    public boolean isAllowUnboarding() {
+        return this.allowUnboarding;
+    }
+
+    /**
      * Get passengers list.
      *
      * @return Passengers list
      */
     public List<Passenger> getPassengers() {
-        return passengers;
+        return this.passengers;
     }
 
     /**
@@ -152,14 +180,15 @@ public class Car extends Thread {
      * @return True if the car is stopped and false otherwise.
      */
     public boolean isStopped() {
-        return this.moving == false;
+        return this.isMoving() == false;
     }
 
     /**
      * Get true if the total number of rides is less than maximum number of
      * rides.
      *
-     * @return
+     * @return True if the total number of rides is less than maximum number of
+     * rides.
      */
     public boolean isWorking() {
         return this.maximumNumberOfRides != this.totalRides;
@@ -171,7 +200,8 @@ public class Car extends Thread {
     public void load() {
         // Check if the car isn't moving
         if (!this.isMoving()) {
-            // 
+            // Allow boarding
+            this.allowBoarding = true;
         }
     }
 
@@ -181,7 +211,33 @@ public class Car extends Thread {
     public void unload() {
         // Check if the car isn't moving
         if (!this.isMoving()) {
-            // 
+            // Allow unboarding
+            this.allowUnboarding = true;
+        }
+    }
+
+    /**
+     * Run.
+     */
+    @Override
+    public void run() {
+        // Check if the car is full
+        if (this.isWorking() && this.isFull() && this.isStopped()) {
+            try {
+                // Prevents boarding and unboarding
+                this.allowUnboarding = false;
+                this.allowBoarding = false;
+                // Starts moving
+                this.moving = true;
+                // Ride
+                TimeUnit.SECONDS.sleep((new Random()).nextInt(4000) + 1000);
+                // Stops moving
+                this.moving = false;
+                // Allow unboarding
+                unload();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
