@@ -35,7 +35,12 @@ public class Handler {
             t.start();
         });
         // Simulation
-        while (car.isWorking()) {
+        while (true) {
+            // 
+            if (!car.isWorking() && car.isEmpty()) {
+                System.out.println("The car closed.");
+                break;
+            }
             // Unload
             if (car.isStopped() && car.isFull() && !car.isReady()
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
@@ -43,14 +48,16 @@ public class Handler {
                 car.unload();
             }
             // Check if the car is empty
-            if (car.isStopped() && car.isEmpty() && !car.isReady()
-                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
+            if (car.isWorking() && car.isStopped() && car.isEmpty()
+                    && !car.isReady() && !car.isAllowBoarding()
+                    && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }
             // Check if the car is ready
-            if (car.isStopped() && car.isFull() && car.isReady()
-                    && !car.isAllowUnboarding() && !car.isAllowBoarding()) {
+            if (car.isWorking() && car.isStopped() && car.isFull()
+                    && car.isReady() && !car.isAllowUnboarding()
+                    && !car.isAllowBoarding()) {
                 // Run the ride
                 car.run();
             }

@@ -6,7 +6,6 @@ package rollercoaster;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
 public class Car {
 
     // Singleton
-    private static Car instance = new Car(2, 4);
+    private static Car instance = new Car(4, 4);
 
     // Maximum number of rides
     private final int maximumNumberOfRides;
@@ -190,20 +189,24 @@ public class Car {
      * Allows passengers to board.
      */
     public void load() {
-        // Allow boarding
-        System.out.println("Boarding...");
-        this.allowBoarding = true;
+        synchronized (this) {
+            // Allow boarding
+            System.out.println("Boarding...");
+            this.allowBoarding = true;
+        }
     }
 
     /**
      * Allows passengers to unboard.
      */
     public void unload() {
-        // Check if the car is stopped
-        if (this.isStopped() && this.isFull()) {
-            // Allow unboarding
-            System.out.println("Unboarding...");
-            this.allowUnboarding = true;
+        synchronized (this) {
+            // Check if the car is stopped
+            if (this.isStopped() && this.isFull()) {
+                // Allow unboarding
+                System.out.println("Unboarding...");
+                this.allowUnboarding = true;
+            }
         }
     }
 
@@ -213,19 +216,22 @@ public class Car {
     public void run() {
         // Check if the car will still work
         if (this.isWorking() && this.isReady()) {
-            try {
-                // Starts moving
-                this.ready = false;
-                this.moving = true;
-                // Ride
-                System.out.println("Ride started.");
-                this.totalRides++;
-                TimeUnit.SECONDS.sleep((new Random()).nextInt(4) + 1);
-                // Stops moving
-                this.moving = false;
-                System.out.println("Ride ended.");
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Passengers" + passengers);
+            synchronized (this) {
+                try {
+                    // Starts moving
+                    this.ready = false;
+                    this.moving = true;
+                    // Ride
+                    System.out.println("Ride started.");
+                    this.totalRides++;
+                    wait((new Random()).nextInt(4) + 1);
+                    // Stops moving
+                    this.moving = false;
+                    System.out.println("Ride ended.");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
