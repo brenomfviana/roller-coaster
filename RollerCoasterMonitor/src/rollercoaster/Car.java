@@ -70,13 +70,15 @@ public class Car {
      * @param passenger The passenger
      */
     public void addPassenger(Passenger passenger) {
-        // Check if the car isn't full
-        if (!this.isFull() && !this.passengers.contains(passenger)) {
-            this.passengers.add(passenger);
-            // Check if the car full
-            if (this.isFull()) {
-                this.allowBoarding = false;
-                this.ready = true;
+        synchronized (this) {
+            // Check if the car isn't full
+            if (!this.isFull() && !this.passengers.contains(passenger)) {
+                this.passengers.add(passenger);
+                // Check if the car full
+                if (this.isFull()) {
+                    this.allowBoarding = false;
+                    this.ready = true;
+                }
             }
         }
     }
@@ -87,12 +89,14 @@ public class Car {
      * @param passenger The passenger
      */
     public void removePassenger(Passenger passenger) {
-        // Check if the car in't empty
-        if (!this.passengers.isEmpty()) {
-            this.passengers.remove(passenger);
-            // Check if the car is empty
-            if (this.passengers.isEmpty()) {
-                this.allowUnboarding = false;
+        synchronized (this) {
+            // Check if the car in't empty
+            if (!this.passengers.isEmpty()) {
+                this.passengers.remove(passenger);
+                // Check if the car is empty
+                if (this.passengers.isEmpty()) {
+                    this.allowUnboarding = false;
+                }
             }
         }
     }
@@ -186,12 +190,9 @@ public class Car {
      * Allows passengers to board.
      */
     public void load() {
-        // Check if the car is stopped and if the car will still work
-        if (this.isWorking() && this.isStopped() && this.isEmpty()) {
-            // Allow boarding
-            System.out.println("Boarding...");
-            this.allowBoarding = true;
-        }
+        // Allow boarding
+        System.out.println("Boarding...");
+        this.allowBoarding = true;
     }
 
     /**

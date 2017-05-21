@@ -53,27 +53,17 @@ public class Passenger implements Runnable {
     /**
      * Boarding. Get this passenger in the car.
      */
-    public synchronized void board() {
-        if (this.isOnBoard()) {
-            System.out.println("p " + this.getID());
-        }
-        // Check if the car isn't full and if this passenger isn't in the car
-        if (!this.isOnBoard() && this.car.isAllowBoarding()
-                && !this.car.isFull()) {
-            this.car.addPassenger(this);
-            System.out.println("Passenger " + this.getID() + " is on board.");
-        }
+    public void board() {
+        this.car.addPassenger(this);
+        System.out.println("Passenger " + this.getID() + " is on board.");
     }
 
     /**
      * Unboarding. Get this passenger out the car.
      */
-    public synchronized void unboard() {
-        // Check if the car is stopped
-        if (this.isOnBoard() && this.car.isAllowUnboarding()) {
-            this.car.removePassenger(this);
-            System.out.println("Passenger " + this.getID() + " disembarked.");
-        }
+    public void unboard() {
+        this.car.removePassenger(this);
+        System.out.println("Passenger " + this.getID() + " disembarked.");
     }
 
     @Override
@@ -81,14 +71,13 @@ public class Passenger implements Runnable {
         // Print passenger
         System.out.println("Passenger " + this.getID());
         // While the car is working
-        while (this.car.isWorking()) {
+        while (true) {
             // If the passenger isn't on board and car allows boarding
             if (!this.isOnBoard() && this.car.isAllowBoarding()) {
                 this.board();
             }
             // If the passenger is on board and car allows unboarding
             if (this.isOnBoard() && this.car.isAllowUnboarding()) {
-                System.out.println("...");
                 this.unboard();
             }
             // 
