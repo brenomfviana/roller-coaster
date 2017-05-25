@@ -80,9 +80,6 @@ public class Car {
     public void addPassenger(Passenger passenger) {
         this.lock.lock();
         try {
-            if (this.isFull()) {
-                this.full.await();
-            }
             // Check if the car isn't full
             if (!this.isFull() && !this.passengers.contains(passenger)) {
                 this.passengers.add(passenger);
@@ -93,9 +90,6 @@ public class Car {
                     this.ready = true;
                 }
             }
-            this.empty.signal();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             this.lock.unlock();
         }

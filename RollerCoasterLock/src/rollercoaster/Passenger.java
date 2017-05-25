@@ -91,10 +91,12 @@ public class Passenger implements Runnable {
             // If the passenger isn't on board and car allows boarding
             if (!this.isWalk() && !this.isOnBoard()
                     && this.car.isAllowBoarding()) {
+                System.out.println("Board");
                 this.board();
             }
             // If the passenger is on board and car allows unboarding
             if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+                System.out.println("Unboard");
                 this.unboard();
             }
             // Walk in the park
