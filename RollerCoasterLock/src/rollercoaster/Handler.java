@@ -11,7 +11,7 @@ import java.util.Random;
  * Roller Coaster handler.
  *
  * @author Breno Viana
- * @version 20/05/2017
+ * @version 25/05/2017
  */
 public class Handler {
 
@@ -56,7 +56,6 @@ public class Handler {
             if (car.isWorking() && car.isStopped() && car.isFull()
                     && car.isReady() && !car.isAllowUnboarding()
                     && !car.isAllowBoarding()) {
-                System.out.println("asdas");
                 // Run the ride
                 car.run();
             }

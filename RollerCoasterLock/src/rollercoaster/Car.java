@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * This class represents the Roller Coaster car.
  *
  * @author Breno Viana
- * @version 20/05/2017
+ * @version 25/05/2017
  */
 public class Car {
 
@@ -41,6 +41,7 @@ public class Car {
     // List of passengers
     private List<Passenger> passengers;
 
+    // Lock
     private Lock lock = new ReentrantLock();
     private Condition full = lock.newCondition();
     private Condition empty = lock.newCondition();

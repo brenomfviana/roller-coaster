@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * This class represents the Roller Coaster passenger.
  *
  * @author Breno Viana
- * @version 20/05/2017
+ * @version 25/05/2017
  */
 public class Passenger implements Runnable {
 
