@@ -85,7 +85,7 @@ public class Passenger implements Runnable {
     @Override
     public void run() {
         // Print passenger
-        System.out.println("Passenger " + this.getID());
+        System.out.println("Passenger " + this.getID() + " entered the park");
         // While the car is working
         while (true) {
             // If the passenger isn't on board and car allows boarding
@@ -99,7 +99,7 @@ public class Passenger implements Runnable {
             }
             // Walk in the park
             if (!this.isOnBoard() && this.isWalk()) {
-                System.out.println("Passenger " + this.getID() + " is walking.");
+                System.out.println("Passenger " + this.getID() + " is walking in the park.");
                 try {
                     TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
                     System.out.println("Passenger " + this.getID() + " back to roller coaster.");
@@ -110,7 +110,7 @@ public class Passenger implements Runnable {
             }
             // Passenger is leaving
             if (!this.isOnBoard() && !this.car.isWorking()) {
-                System.out.println("Passenger " + this.getID() + " is leaving.");
+                System.out.println("Passenger " + this.getID() + " is leaving the park.");
                 break;
             }
         }

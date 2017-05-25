@@ -43,8 +43,8 @@ public class Car {
 
     // Lock
     private Lock lock = new ReentrantLock();
-    private Condition full = lock.newCondition();
-    private Condition empty = lock.newCondition();
+    private Condition full = this.lock.newCondition();
+    private Condition empty = this.lock.newCondition();
 
     /**
      * Constructor.
@@ -86,6 +86,7 @@ public class Car {
                 System.out.println("Passenger " + passenger.getID() + " is on board.");
                 // Check if the car full
                 if (this.isFull()) {
+                    this.full.signal();
                     this.allowBoarding = false;
                     this.ready = true;
                 }
@@ -110,6 +111,7 @@ public class Car {
                 passenger.walk();
                 // Check if the car is empty
                 if (this.passengers.isEmpty()) {
+                    this.empty.signal();
                     this.allowUnboarding = false;
                 }
             }
@@ -271,6 +273,38 @@ public class Car {
             // Allow unboarding
             System.out.println("Unboarding...");
             this.allowUnboarding = true;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * .
+     */
+    public void waitFull() {
+        this.lock.lock();
+        try {
+            try {
+                this.full.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * .
+     */
+    public void waitEmpty() {
+        this.lock.lock();
+        try {
+            try {
+                this.empty.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             this.lock.unlock();
         }

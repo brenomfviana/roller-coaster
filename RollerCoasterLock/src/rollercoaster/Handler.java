@@ -25,7 +25,7 @@ public class Handler {
         // Passengers
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        for (int i = 0; i < ((new Random()).nextInt(1) + 5); i++) {
+        for (int i = 0; i < ((new Random()).nextInt(10) + 10); i++) {
             passengers.add(new Passenger(i + 1, car));
         }
         // Runs passengers
@@ -44,13 +44,14 @@ public class Handler {
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
+                car.waitEmpty();
             }
             // Load
-            if (car.isWorking() && car.isStopped() && car.isEmpty()
-                    && !car.isReady() && !car.isAllowBoarding()
-                    && !car.isAllowUnboarding()) {
+            if (car.isWorking() && car.isStopped() && !car.isReady()
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
+                car.waitFull();
             }
             // Run
             if (car.isWorking() && car.isStopped() && car.isFull()
