@@ -6,8 +6,6 @@ package rollercoaster;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Roller Coaster handler.
@@ -36,7 +34,7 @@ public class Handler {
         });
         // Simulation
         while (true) {
-            // 
+            // Close car
             if (!car.isWorking() && car.isEmpty()) {
                 System.out.println("The car closed.");
                 break;
@@ -47,17 +45,18 @@ public class Handler {
                 // Allow unboarding
                 car.unload();
             }
-            // Check if the car is empty
+            // Load
             if (car.isWorking() && car.isStopped() && car.isEmpty()
                     && !car.isReady() && !car.isAllowBoarding()
                     && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }
-            // Check if the car is ready
+            // Run
             if (car.isWorking() && car.isStopped() && car.isFull()
                     && car.isReady() && !car.isAllowUnboarding()
                     && !car.isAllowBoarding()) {
+                System.out.println("asdas");
                 // Run the ride
                 car.run();
             }

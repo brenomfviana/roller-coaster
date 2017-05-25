@@ -6,6 +6,10 @@ package rollercoaster;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +40,10 @@ public class Car {
     private boolean ready;
     // List of passengers
     private List<Passenger> passengers;
+
+    private Lock lock = new ReentrantLock();
+    private Condition full = lock.newCondition();
+    private Condition empty = lock.newCondition();
 
     /**
      * Constructor.
@@ -69,16 +77,26 @@ public class Car {
      * @param passenger The passenger
      */
     public void addPassenger(Passenger passenger) {
-        synchronized (this) {
+        this.lock.lock();
+        try {
+            if (this.isFull()) {
+                this.full.await();
+            }
             // Check if the car isn't full
             if (!this.isFull() && !this.passengers.contains(passenger)) {
                 this.passengers.add(passenger);
+                System.out.println("Passenger " + passenger.getID() + " is on board.");
                 // Check if the car full
                 if (this.isFull()) {
                     this.allowBoarding = false;
                     this.ready = true;
                 }
             }
+            this.empty.signal();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -88,15 +106,20 @@ public class Car {
      * @param passenger The passenger
      */
     public void removePassenger(Passenger passenger) {
-        synchronized (this) {
+        this.lock.lock();
+        try {
             // Check if the car in't empty
             if (!this.passengers.isEmpty()) {
                 this.passengers.remove(passenger);
+                System.out.println("Passenger " + passenger.getID() + " disembarked.");
+                passenger.walk();
                 // Check if the car is empty
                 if (this.passengers.isEmpty()) {
                     this.allowUnboarding = false;
                 }
             }
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -108,7 +131,12 @@ public class Car {
      * @return True if the passenger is in the car false otherwise
      */
     public boolean isInTheCar(Passenger passenger) {
-        return this.passengers.contains(passenger);
+        this.lock.lock();
+        try {
+            return this.passengers.contains(passenger);
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -117,7 +145,12 @@ public class Car {
      * @return True if the car allows boarding and false otherwise
      */
     public boolean isAllowBoarding() {
-        return this.allowBoarding;
+        this.lock.lock();
+        try {
+            return this.allowBoarding;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -126,7 +159,12 @@ public class Car {
      * @return True if the car allows unboarding and false otherwise
      */
     public boolean isAllowUnboarding() {
-        return this.allowUnboarding;
+        this.lock.lock();
+        try {
+            return this.allowUnboarding;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -135,7 +173,12 @@ public class Car {
      * @return True if the car is ready and false otherwise
      */
     public boolean isReady() {
-        return this.ready;
+        this.lock.lock();
+        try {
+            return this.ready;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -144,7 +187,12 @@ public class Car {
      * @return True if the car is full and false otherwise
      */
     public boolean isFull() {
-        return this.capacity == this.passengers.size();
+        this.lock.lock();
+        try {
+            return this.capacity == this.passengers.size();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -153,7 +201,12 @@ public class Car {
      * @return True if the car is empty and false otherwise
      */
     public boolean isEmpty() {
-        return this.passengers.isEmpty();
+        this.lock.lock();
+        try {
+            return this.passengers.isEmpty();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -162,7 +215,12 @@ public class Car {
      * @return True if the car is moving and false otherwise
      */
     public boolean isMoving() {
-        return this.moving;
+        this.lock.lock();
+        try {
+            return this.moving;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -171,7 +229,12 @@ public class Car {
      * @return True if the car is stopped and false otherwise.
      */
     public boolean isStopped() {
-        return !this.isMoving();
+        this.lock.lock();
+        try {
+            return !this.isMoving();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -182,17 +245,25 @@ public class Car {
      * rides.
      */
     public boolean isWorking() {
-        return this.maximumNumberOfRides > this.totalRides;
+        this.lock.lock();
+        try {
+            return this.maximumNumberOfRides > this.totalRides;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
      * Allows passengers to board.
      */
     public void load() {
-        synchronized (this) {
+        this.lock.lock();
+        try {
             // Allow boarding
             System.out.println("Boarding...");
             this.allowBoarding = true;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -200,13 +271,13 @@ public class Car {
      * Allows passengers to unboard.
      */
     public void unload() {
-        synchronized (this) {
-            // Check if the car is stopped
-            if (this.isStopped() && this.isFull()) {
-                // Allow unboarding
-                System.out.println("Unboarding...");
-                this.allowUnboarding = true;
-            }
+        this.lock.lock();
+        try {
+            // Allow unboarding
+            System.out.println("Unboarding...");
+            this.allowUnboarding = true;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -217,7 +288,8 @@ public class Car {
         // Check if the car will still work
         if (this.isWorking() && this.isReady()) {
             System.out.println("Passengers" + passengers);
-            synchronized (this) {
+            this.lock.lock();
+            try {
                 try {
                     // Starts moving
                     this.ready = false;
@@ -225,13 +297,15 @@ public class Car {
                     // Ride
                     System.out.println("Ride started.");
                     this.totalRides++;
-                    wait((new Random()).nextInt(4) + 1);
+                    TimeUnit.SECONDS.sleep((new Random()).nextInt(4) + 1);
                     // Stops moving
                     this.moving = false;
                     System.out.println("Ride ended.");
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } finally {
+                this.lock.unlock();
             }
         }
     }

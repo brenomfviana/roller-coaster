@@ -58,7 +58,14 @@ public class Passenger implements Runnable {
      * @return True if the passenger will walk in the park and false otherwise
      */
     public boolean isWalk() {
-        return walk;
+        return this.walk;
+    }
+
+    /**
+     * The passenger walks in the park.
+     */
+    public void walk() {
+        this.walk = true;
     }
 
     /**
@@ -66,7 +73,6 @@ public class Passenger implements Runnable {
      */
     public void board() {
         this.car.addPassenger(this);
-        System.out.println("Passenger " + this.getID() + " is on board.");
     }
 
     /**
@@ -74,8 +80,6 @@ public class Passenger implements Runnable {
      */
     public void unboard() {
         this.car.removePassenger(this);
-        System.out.println("Passenger " + this.getID() + " disembarked.");
-        this.walk = true;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class Passenger implements Runnable {
         // While the car is working
         while (true) {
             // If the passenger isn't on board and car allows boarding
-            if (!this.isOnBoard()
+            if (!this.isWalk() && !this.isOnBoard()
                     && this.car.isAllowBoarding()) {
                 this.board();
             }
@@ -94,17 +98,19 @@ public class Passenger implements Runnable {
                 this.unboard();
             }
             // Walk in the park
-            if (!this.isOnBoard() && this.car.isMoving()) {
+            if (!this.isOnBoard() && this.isWalk()) {
                 System.out.println("Passenger " + this.getID() + " is walking.");
                 try {
-                    TimeUnit.SECONDS.sleep((new Random()).nextInt(3) + 1);
+                    TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
+                    System.out.println("Passenger " + this.getID() + " back to roller coaster.");
                     this.walk = false;
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            // Get out
+            // Passenger is leaving
             if (!this.isOnBoard() && !this.car.isWorking()) {
+                System.out.println("Passenger " + this.getID() + " is leaving.");
                 break;
             }
         }
