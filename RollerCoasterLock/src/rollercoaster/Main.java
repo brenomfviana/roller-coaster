@@ -1,13 +1,11 @@
 /*
  * GNU License.
  */
-package rollercoaster;
+package rollercoastersemaphore;
 
 /**
- * This is the main class of Roller Coaster.
  *
- * @author Breno Viana
- * @version 20/05/2017
+ * @author Patrícia
  */
 public class Main {
 
@@ -17,4 +15,4 @@ public class Main {
     public static void main(String[] args) {
         Handler.run();
     }
-}
+}   

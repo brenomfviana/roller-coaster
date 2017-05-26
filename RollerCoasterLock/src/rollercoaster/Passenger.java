@@ -1,18 +1,18 @@
 /*
  * GNU License.
  */
-package rollercoaster;
+package rollercoastersemaphore;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 
 /**
  * This class represents the Roller Coaster passenger.
  *
- * @author Breno Viana
- * @version 25/05/2017
+ * @author Patricia & Breno
  */
 public class Passenger implements Runnable {
 
@@ -22,6 +22,8 @@ public class Passenger implements Runnable {
     private final Car car;
     // Walk in the park
     private boolean walk;
+    // Semaphore
+    private Semaphore sem;
 
     /**
      * Constructor.
@@ -29,9 +31,10 @@ public class Passenger implements Runnable {
      * @param id Passenger ID
      * @param car Roller Coaster car
      */
-    public Passenger(int id, Car car) {
+    public Passenger(int id, Car car, Semaphore sem) {
         this.id = id;
         this.car = car;
+        this.sem = sem;
     }
 
     /**
@@ -85,21 +88,34 @@ public class Passenger implements Runnable {
     @Override
     public void run() {
         // Print passenger
-        System.out.println("Passenger " + this.getID() + " entered the park");
+        System.out.println("Passenger " + this.getID());
         // While the car is working
         while (true) {
             // If the passenger isn't on board and car allows boarding
             if (!this.isWalk() && !this.isOnBoard()
                     && this.car.isAllowBoarding()) {
+                
+                // Try to enter the semaphore
+                try {
+                    sem.acquire();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Board the car
                 this.board();
             }
             // If the passenger is on board and car allows unboarding
-            if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+            else if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+                // Unboard the car
                 this.unboard();
+                
+                // Release the semaphore
+                sem.release();
             }
             // Walk in the park
-            if (!this.isOnBoard() && this.isWalk()) {
-                System.out.println("Passenger " + this.getID() + " is walking in the park.");
+            else if (!this.isOnBoard() && this.isWalk()) {
+                System.out.println("Passenger " + this.getID() + " is walking.");
                 try {
                     TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
                     System.out.println("Passenger " + this.getID() + " back to roller coaster.");
@@ -109,8 +125,8 @@ public class Passenger implements Runnable {
                 }
             }
             // Passenger is leaving
-            if (!this.isOnBoard() && !this.car.isWorking()) {
-                System.out.println("Passenger " + this.getID() + " is leaving the park.");
+            else if (!this.isOnBoard() && !this.car.isWorking()) {
+                System.out.println("Passenger " + this.getID() + " is leaving.");
                 break;
             }
         }
