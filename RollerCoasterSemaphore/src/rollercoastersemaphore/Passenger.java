@@ -106,7 +106,7 @@ public class Passenger implements Runnable {
                 this.board();
             }
             // If the passenger is on board and car allows unboarding
-            if (this.isOnBoard() && this.car.isAllowUnboarding()) {
+            else if (this.isOnBoard() && this.car.isAllowUnboarding()) {
                 // Unboard the car
                 this.unboard();
                 
@@ -114,7 +114,7 @@ public class Passenger implements Runnable {
                 sem.release();
             }
             // Walk in the park
-            if (!this.isOnBoard() && this.isWalk()) {
+            else if (!this.isOnBoard() && this.isWalk()) {
                 System.out.println("Passenger " + this.getID() + " is walking.");
                 try {
                     TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
@@ -125,7 +125,7 @@ public class Passenger implements Runnable {
                 }
             }
             // Passenger is leaving
-            if (!this.isOnBoard() && !this.car.isWorking()) {
+            else if (!this.isOnBoard() && !this.car.isWorking()) {
                 System.out.println("Passenger " + this.getID() + " is leaving.");
                 break;
             }
