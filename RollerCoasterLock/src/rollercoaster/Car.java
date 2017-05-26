@@ -75,8 +75,12 @@ public class Car {
         if (!this.isFull() && !this.passengers.contains(passenger)) {
             this.passengers.add(passenger);
             System.out.println("Passenger " + passenger.getID() + " is on board.");
+            
+            
+            System.out.println("Passengers" + passengers);
             // Check if the car full
             if (this.isFull()) {
+                System.out.println("The car is full; AllowBoarding = false; Ready = true");
                 this.allowBoarding = false;
                 this.ready = true;
             }
@@ -94,8 +98,12 @@ public class Car {
             this.passengers.remove(passenger);
             System.out.println("Passenger " + passenger.getID() + " disembarked.");
             passenger.walk();
+            
+            
+            System.out.println("Passengers" + passengers);
             // Check if the car is empty
             if (this.passengers.isEmpty()) {
+                System.out.println("All passengers are gone; AllowUnboarding = false");
                 this.allowUnboarding = false;
             }
         }
@@ -193,6 +201,7 @@ public class Car {
         // Allow boarding
         System.out.println("Boarding...");
         this.allowBoarding = true;
+        this.allowUnboarding = false;
     }
 
     /**
@@ -202,6 +211,7 @@ public class Car {
         // Allow unboarding
         System.out.println("Unboarding...");
         this.allowUnboarding = true;
+        this.allowBoarding = false;
     }
 
     /**

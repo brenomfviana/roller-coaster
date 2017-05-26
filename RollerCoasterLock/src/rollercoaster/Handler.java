@@ -1,11 +1,12 @@
 /*
  * GNU License.
  */
-package rollercoaster;
+package rollercoastersemaphore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 /**
  * Roller Coaster handler.
@@ -17,6 +18,8 @@ public class Handler {
 
     // Roller Coaster car
     private static Car car = Car.getInstance();
+    // Semaphore
+    private static Semaphore sem = new Semaphore(4,true);
 
     /**
      * Run.
@@ -26,7 +29,7 @@ public class Handler {
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
         for (int i = 0; i < ((new Random()).nextInt(1) + 5); i++) {
-            passengers.add(new Passenger(i + 1, car));
+            passengers.add(new Passenger(i + 1, car, sem));
         }
         // Runs passengers
         passengers.stream().map((passenger) -> new Thread(passenger)).forEach((t) -> {
@@ -40,22 +43,20 @@ public class Handler {
                 break;
             }
             // Unload
-            if (car.isStopped() && car.isFull() && !car.isReady()
-                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
+            else if (car.isStopped() && car.isFull() && !car.isReady()
+                    && !car.isAllowBoarding()) {
                 // Allow unboarding
                 car.unload();
             }
             // Load
-            if (car.isWorking() && car.isStopped() && car.isEmpty()
-                    && !car.isReady() && !car.isAllowBoarding()
-                    && !car.isAllowUnboarding()) {
+            else if (car.isWorking() && car.isStopped() && !car.isReady()
+                    && !car.isAllowBoarding()) {
                 // Allow boarding
                 car.load();
             }
             // Run
-            if (car.isWorking() && car.isStopped() && car.isFull()
-                    && car.isReady() && !car.isAllowUnboarding()
-                    && !car.isAllowBoarding()) {
+            else if (car.isWorking() && car.isStopped() && car.isFull()
+                    && car.isReady() && !car.isAllowUnboarding()) {
                 // Run the ride
                 car.run();
             }
