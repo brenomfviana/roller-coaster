@@ -369,7 +369,8 @@ public class RollerCoasterCar {
             try {
                 this.full.await();
             } catch (InterruptedException ex) {
-                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         } finally {
             this.lock.unlock();
@@ -385,7 +386,8 @@ public class RollerCoasterCar {
             try {
                 this.empty.await();
             } catch (InterruptedException ex) {
-                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         } finally {
             this.lock.unlock();
@@ -413,7 +415,8 @@ public class RollerCoasterCar {
                     this.moving = false;
                     System.out.println("Ride ended.");
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RollerCoasterCar.class.getName())
+                            .log(Level.SEVERE, null, ex);
                 }
             } finally {
                 this.lock.unlock();

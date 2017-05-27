@@ -103,7 +103,8 @@ public class Passenger implements Runnable {
         // While the car is working
         while (true) {
             // If the passenger isn't walking, isn't on board and isn't in line
-            if (!this.isWalk() && !this.isOnBoard() && !this.car.isInLine(this)) {
+            if (!this.isWalk() && !this.isOnBoard()
+                    && !this.car.isInLine(this)) {
                 this.car.addPassengerToQueue(this);
             }
             // If the passenger isn't walking, isn't on board, there's no line,
@@ -125,10 +126,12 @@ public class Passenger implements Runnable {
                 System.out.println(this.toString() + " is walking.");
                 try {
                     TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
-                    System.out.println(this.toString() + " back to roller coaster.");
+                    System.out.println(this.toString()
+                            + " back to roller coaster.");
                     this.walk = false;
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Passenger.class.getName())
+                            .log(Level.SEVERE, null, ex);
                 }
             }
             // Passenger is leaving
