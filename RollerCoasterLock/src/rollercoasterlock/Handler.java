@@ -6,12 +6,11 @@ package rollercoasterlock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 
 /**
  * Roller Coaster handler.
  *
- * @author Breno Viana
+ * @author Patricia & Breno
  * @version 25/05/2017
  */
 public class Handler {
@@ -26,7 +25,7 @@ public class Handler {
         // Passengers
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        for (int i = 0; i < ((new Random()).nextInt(10) + 10); i++) {
+        for (int i = 0; i < ((new Random()).nextInt(10) + 15); i++) {
             passengers.add(new Passenger(i + 1, car));
         }
         // Runs passengers
@@ -41,19 +40,19 @@ public class Handler {
                 break;
             }
             // Unload
-            else if (car.isStopped() && car.isFull() && !car.isReady()
+            if (car.isStopped() && car.isFull() && !car.isReady()
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
             }
             // Load
-            else if (car.isWorking() && car.isStopped() && !car.isReady()
+            if (car.isWorking() && car.isStopped() && !car.isReady()
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }
             // Run
-            else if (car.isWorking() && car.isStopped() && car.isFull()
+            if (car.isWorking() && car.isStopped() && car.isFull()
                     && car.isReady() && !car.isAllowUnboarding()) {
                 // Run the ride
                 car.run();

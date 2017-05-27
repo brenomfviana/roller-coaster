@@ -3,9 +3,11 @@
  */
 package rollercoasterlock;
 
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * This class represents the Roller Coaster car.
  *
  * @author Patricia & Breno
+ * @version 26/05/2017
  */
 public class Car {
 
@@ -39,6 +42,8 @@ public class Car {
     private boolean ready;
     // List of passengers
     private List<Passenger> passengers;
+    // Passenger queue
+    private Queue<Passenger> queue;
 
     // Lock
     private Lock lock = new ReentrantLock();
@@ -63,6 +68,7 @@ public class Car {
         this.allowUnboarding = false;
         // Passengers
         this.passengers = new ArrayList<>();
+        this.queue = new ArrayDeque<>();
     }
 
     /**
@@ -72,6 +78,77 @@ public class Car {
      */
     public static Car getInstance() {
         return instance;
+    }
+
+    /**
+     * Add passenger to queue.
+     *
+     * @param passenger The passenger
+     */
+    public void addPassengerToQueue(Passenger passenger) {
+        this.lock.lock();
+        try {
+            this.queue.add(passenger);
+            System.out.println("Passenger " + passenger.getID() + " is in line.");
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Remove passenger from the queue.
+     *
+     * @param passenger The passenger
+     */
+    public void removePassengerFromTheQueue(Passenger passenger) {
+        this.lock.lock();
+        try {
+            this.queue.poll();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Get true if the passenger is in line and false otherwise.
+     *
+     * @param passenger The passenger
+     *
+     * @return True if the passenger is in line false otherwise
+     */
+    public boolean isInLine(Passenger passenger) {
+        this.lock.lock();
+        try {
+            return this.queue.contains(passenger);
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * .
+     * @return .
+     */
+    public boolean queueIsEmpty() {
+        this.lock.lock();
+        try {
+            return this.queue.isEmpty();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * .
+     * @return .
+     */
+    public Passenger nextPassenger() {
+        this.lock.lock();
+        try {
+            return this.queue.peek();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
