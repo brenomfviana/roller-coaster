@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a work of the Concurrent Programming course in which two solutions were implemented using different methods of synchronization.
+This is a work of the Concurrent Programming course in which two solutions were implemented using different methods of synchronization. The methods used to solve the problem were implicit locks, with monitor implementation, and explicit locks.
 
 ## Problem
 
@@ -30,6 +30,48 @@ During the execution of the program, the following actions must be performed for
 - the time each passenger walks through the park before going back to the roller coaster is random and different to each run of the program.
 
 For readability purposes, the program shall display on the standard output the execution of each of the operations performed by the passengers and the car. The total number of passengers n, the capacity of car C, and the maximum number of P-trips that can be performed per day should be provided as input to the program as command line arguments. Case C < n, the program should issue an error message to the user and be immediately shut down.
+
+## Compiling and Running
+
+We usually use an IDE (like NetBeans or Eclipse) to compile and build the program, but if you can use the following commands.
+
+### Roller Coaster Monitor
+
+#### How to compile
+
+To compile enter the following command:
+
+    cd RollerCoasterMonitor
+    javac src/rollercoastermonitor/*.java src/rollercoastermonitor/rollercoaster/*.java
+
+#### How to generate executable
+
+To generate the jar executable run the following command:
+
+    jar cfm RollerCoasterMonitor.jar manifest.mf src/rollercoasterlock/*.class src/rollercoasterlock/rollercoaster/*.class
+
+#### How to run
+
+    java -jar RollerCoasterMonitor.jar
+
+### Roller Coaster Lock
+
+#### How to compile
+
+To compile enter the following command:
+
+    cd RollerCoasterLock
+    javac src/rollercoasterlock/*.java src/rollercoasterlock/rollercoaster/*.java
+
+#### How to generate executable
+
+To generate the jar executable run the following command:
+
+    jar cfm RollerCoasterLock.jar manifest.mf src/rollercoasterlock/*.class src/rollercoasterlock/rollercoaster/*.class
+
+#### How to run
+
+    java -jar RollerCoasterLock.jar
 
 ## Members
 
