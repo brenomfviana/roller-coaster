@@ -77,7 +77,7 @@ public class RollerCoasterCar {
     public void addPassenger(Passenger passenger) {
         // Try to enter the semaphore
         try {
-            System.out.println("Passenger " + passenger.getID()
+            System.out.println(passenger.toString()
                     + " requesting semaphore; Sem getQueueLength(): "
                     + semaphore.getQueueLength());
             semaphore.acquire();
@@ -88,7 +88,7 @@ public class RollerCoasterCar {
         // Check if the car isn't full
         if (!this.isFull() && !this.passengers.contains(passenger)) {
             this.passengers.add(passenger);
-            System.out.println("Passenger " + passenger.getID() + " is on board.");
+            System.out.println(passenger.toString() + " is on board.");
             // Check if the car full
             if (this.isFull()) {
                 System.out.println("The car is full; AllowBoarding = false; Ready = true");
@@ -107,12 +107,12 @@ public class RollerCoasterCar {
 
         // Release the semaphore
         semaphore.release();
-        System.out.println("Passenger " + passenger.getID() + " releasing semaphore");
+        System.out.println(passenger.toString() + " releasing semaphore");
 
         // Check if the car in't empty
         if (!this.passengers.isEmpty()) {
             this.passengers.remove(passenger);
-            System.out.println("Passenger " + passenger.getID() + " disembarked.");
+            System.out.println(passenger.toString() + " disembarked.");
             passenger.walk();
             // Check if the car is empty
             if (this.passengers.isEmpty()) {

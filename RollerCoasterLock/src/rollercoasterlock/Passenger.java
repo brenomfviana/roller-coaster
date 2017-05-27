@@ -36,15 +36,6 @@ public class Passenger implements Runnable {
     }
 
     /**
-     * Get the passenger ID.
-     *
-     * @return Passenger ID
-     */
-    public int getID() {
-        return this.id;
-    }
-
-    /**
      * Get true if the passenger is on board and false otherwise.
      *
      * @return True if the passenger is on board and false otherwise
