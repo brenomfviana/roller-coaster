@@ -7,11 +7,12 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
+import rollercoasterlock.rollercoaster.RollerCoasterCar;
 
 /**
  * This class represents the Roller Coaster passenger.
  *
- * @author Patricia & Breno
+ * @author Breno & Patrícia
  * @version 26/05/2017
  */
 public class Passenger implements Runnable {
@@ -19,7 +20,7 @@ public class Passenger implements Runnable {
     // Passenger ID
     private final int id;
     // Roller Coaster Car
-    private final Car car;
+    private final RollerCoasterCar car;
     // Walk in the park
     private boolean walk;
 
@@ -29,7 +30,7 @@ public class Passenger implements Runnable {
      * @param id Passenger ID
      * @param car Roller Coaster car
      */
-    public Passenger(int id, Car car) {
+    public Passenger(int id, RollerCoasterCar car) {
         this.id = id;
         this.car = car;
     }
@@ -79,6 +80,7 @@ public class Passenger implements Runnable {
      * Unboarding. Get this passenger out the car.
      */
     public void unboard() {
+        this.walk();
         this.car.removePassenger(this);
     }
 
@@ -97,13 +99,16 @@ public class Passenger implements Runnable {
      * Get this passenger out of line.
      */
     public void getOutOfLine() {
-        this.car.removePassengerFromTheQueue(this);
+        // Check if the passenger is the next
+        if (this.isNext()) {
+            this.car.removePassengerFromTheQueue(this);
+        }
     }
 
     @Override
     public void run() {
         // Print passenger
-        System.out.println("Passenger " + this.getID());
+        System.out.println(this.toString());
         // While the car is working
         while (true) {
             // If the passenger isn't walking, isn't on board and isn't in line
@@ -126,18 +131,18 @@ public class Passenger implements Runnable {
             }
             // Walk in the park
             if (!this.isOnBoard() && this.isWalk()) {
-                System.out.println("Passenger " + this.getID() + " is walking.");
+                System.out.println(this.toString() + " is walking.");
                 try {
                     TimeUnit.SECONDS.sleep((new Random()).nextInt(5) + 1);
-                    System.out.println("Passenger " + this.getID() + " back to roller coaster.");
+                    System.out.println(this.toString() + " back to roller coaster.");
                     this.walk = false;
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             // Passenger is leaving
-            if (!this.isOnBoard() && !this.car.isWorking()) {
-                System.out.println("Passenger " + this.getID() + " is leaving.");
+            if (!this.isOnBoard() && !this.car.isInOperation()) {
+                System.out.println(this.toString() + " is leaving.");
                 break;
             }
         }
@@ -145,6 +150,6 @@ public class Passenger implements Runnable {
 
     @Override
     public String toString() {
-        return "Passenger{" + "id=" + id + '}';
+        return "Passenger " + id;
     }
 }

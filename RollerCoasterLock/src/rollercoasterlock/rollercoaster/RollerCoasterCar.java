@@ -1,30 +1,31 @@
 /*
  * GNU License.
  */
-package rollercoasterlock;
+package rollercoasterlock.rollercoaster;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Queue;
-import java.util.ArrayDeque;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
+import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import rollercoasterlock.Passenger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class represents the Roller Coaster car.
  *
- * @author Patricia & Breno
+ * @author Breno & Patrícia
  * @version 27/05/2017
  */
-public class Car {
+public class RollerCoasterCar {
 
     // Singleton
-    private static Car instance = new Car();
+    private static RollerCoasterCar instance = new RollerCoasterCar();
 
     // Maximum Number of Rides
     private final int MAX_NUMBER_OF_RIDES = 4;
@@ -54,7 +55,7 @@ public class Car {
     /**
      * Constructor.
      */
-    private Car() {
+    private RollerCoasterCar() {
         // Control variables
         this.totalRides = 0;
         // State variables
@@ -72,7 +73,7 @@ public class Car {
      *
      * @return Instance of car
      */
-    public static Car getInstance() {
+    public static RollerCoasterCar getInstance() {
         return instance;
     }
 
@@ -84,8 +85,10 @@ public class Car {
     public void addPassengerToQueue(Passenger passenger) {
         this.lock.lock();
         try {
-            this.queue.add(passenger);
-            System.out.println("Passenger " + passenger.getID() + " is in line.");
+            if (!this.queue.contains(passenger)) {
+                this.queue.add(passenger);
+                System.out.println(passenger.toString() + " is in line.");
+            }
         } finally {
             this.lock.unlock();
         }
@@ -99,7 +102,10 @@ public class Car {
     public void removePassengerFromTheQueue(Passenger passenger) {
         this.lock.lock();
         try {
-            this.queue.poll();
+            // Check if the passenger is the next
+            if (passenger == this.nextPassenger()) {
+                this.queue.remove();
+            }
         } finally {
             this.lock.unlock();
         }
@@ -160,7 +166,7 @@ public class Car {
             // Check if the car isn't full
             if (!this.isFull() && !this.passengers.contains(passenger)) {
                 this.passengers.add(passenger);
-                System.out.println("Passenger " + passenger.getID() + " is on board.");
+                System.out.println(passenger.toString() + " is on board.");
                 // Check if the car full
                 if (this.isFull()) {
                     this.full.signal();
@@ -184,8 +190,7 @@ public class Car {
             // Check if the car in't empty
             if (!this.passengers.isEmpty()) {
                 this.passengers.remove(passenger);
-                System.out.println("Passenger " + passenger.getID() + " disembarked.");
-                passenger.walk();
+                System.out.println(passenger.toString() + " disembarked.");
                 // Check if the car is empty
                 if (this.passengers.isEmpty()) {
                     this.empty.signal();
@@ -312,13 +317,13 @@ public class Car {
     }
 
     /**
-     * Get true if the total number of rides is less than maximum number of
-     * rides.
+     * Get true if the car is in operation. That is, get true if the total
+     * number of rides is less than maximum number of rides.
      *
      * @return True if the total number of rides is less than maximum number of
      * rides.
      */
-    public boolean isWorking() {
+    public boolean isInOperation() {
         this.lock.lock();
         try {
             return this.MAX_NUMBER_OF_RIDES > this.totalRides;
@@ -364,7 +369,7 @@ public class Car {
             try {
                 this.full.await();
             } catch (InterruptedException ex) {
-                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             this.lock.unlock();
@@ -380,7 +385,7 @@ public class Car {
             try {
                 this.empty.await();
             } catch (InterruptedException ex) {
-                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             this.lock.unlock();
@@ -392,7 +397,7 @@ public class Car {
      */
     public void run() {
         // Check if the car will still work
-        if (this.isWorking() && this.isReady()) {
+        if (this.isInOperation() && this.isReady()) {
             System.out.println("Passengers" + this.passengers);
             this.lock.lock();
             try {
@@ -408,7 +413,7 @@ public class Car {
                     this.moving = false;
                     System.out.println("Ride ended.");
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } finally {
                 this.lock.unlock();
