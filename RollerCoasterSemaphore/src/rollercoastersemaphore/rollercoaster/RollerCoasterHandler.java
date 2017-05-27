@@ -27,6 +27,7 @@ public class RollerCoasterHandler {
      * Run the Roller Coaster handler.
      */
     public void run() {
+        System.out.println(this.car);
         // Run Roller Coaster simulation
         while (true) {
             // Check if the car isn't in operation and if it is empty

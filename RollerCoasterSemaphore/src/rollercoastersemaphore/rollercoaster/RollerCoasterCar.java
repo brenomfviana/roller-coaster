@@ -314,4 +314,10 @@ public class RollerCoasterCar {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "RollerCoasterCar{" + "Max number of rides per day=" + MAX_NUMBER_OF_RIDES + ", Capacity of the car=" + CAPACITY + '}';
+    }
+    
 }
