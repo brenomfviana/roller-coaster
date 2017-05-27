@@ -3,35 +3,36 @@
  */
 package rollercoasterlock;
 
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayDeque;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents the Roller Coaster car.
  *
  * @author Patricia & Breno
- * @version 26/05/2017
+ * @version 27/05/2017
  */
 public class Car {
 
     // Singleton
-    private static Car instance = new Car(4, 4);
+    private static Car instance = new Car();
 
-    // Maximum number of rides
-    private final int maximumNumberOfRides;
+    // Maximum Number of Rides
+    private final int MAX_NUMBER_OF_RIDES = 4;
+    // Capacity
+    private final int CAPACITY = 4;
+
     // Total number of rides daily
     private int totalRides;
-    // Car capacity
-    private final int capacity;
     // Is in moving
     private boolean moving;
     // Allow boarding
@@ -52,15 +53,10 @@ public class Car {
 
     /**
      * Constructor.
-     *
-     * @param maximumNumberOfRides Maximum number of rides
-     * @param capacity Car capacity
      */
-    private Car(int maximumNumberOfRides, int capacity) {
+    private Car() {
         // Control variables
         this.totalRides = 0;
-        this.capacity = capacity;
-        this.maximumNumberOfRides = maximumNumberOfRides;
         // State variables
         this.ready = false;
         this.moving = false;
@@ -126,10 +122,11 @@ public class Car {
     }
 
     /**
-     * .
-     * @return .
+     * Get true if the line is empty and false otherwise.
+     *
+     * @return True if the line is empty and false otherwise
      */
-    public boolean queueIsEmpty() {
+    public boolean lineIsEmpty() {
         this.lock.lock();
         try {
             return this.queue.isEmpty();
@@ -139,8 +136,9 @@ public class Car {
     }
 
     /**
-     * .
-     * @return .
+     * Get the next passenger to board in the car.
+     *
+     * @return The next passenger to board in the car
      */
     public Passenger nextPassenger() {
         this.lock.lock();
@@ -265,7 +263,7 @@ public class Car {
     public boolean isFull() {
         this.lock.lock();
         try {
-            return this.capacity == this.passengers.size();
+            return this.passengers.size() == this.CAPACITY;
         } finally {
             this.lock.unlock();
         }
@@ -323,7 +321,7 @@ public class Car {
     public boolean isWorking() {
         this.lock.lock();
         try {
-            return this.maximumNumberOfRides > this.totalRides;
+            return this.MAX_NUMBER_OF_RIDES > this.totalRides;
         } finally {
             this.lock.unlock();
         }
@@ -358,7 +356,7 @@ public class Car {
     }
 
     /**
-     * .
+     * Wait for the car to be full.
      */
     public void waitFull() {
         this.lock.lock();
@@ -374,7 +372,7 @@ public class Car {
     }
 
     /**
-     * .
+     * Wait for the car to be empty.
      */
     public void waitEmpty() {
         this.lock.lock();
@@ -395,7 +393,7 @@ public class Car {
     public void run() {
         // Check if the car will still work
         if (this.isWorking() && this.isReady()) {
-            System.out.println("Passengers" + passengers);
+            System.out.println("Passengers" + this.passengers);
             this.lock.lock();
             try {
                 try {

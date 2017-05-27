@@ -112,7 +112,7 @@ public class Passenger implements Runnable {
             }
             // If the passenger isn't walking, isn't on board, there's no line,
             // car allows boarding and this passenger is the next
-            if (!this.isWalk() && !this.isOnBoard() && !this.car.queueIsEmpty()
+            if (!this.isWalk() && !this.isOnBoard() && !this.car.lineIsEmpty()
                     && this.car.isAllowBoarding() && this.isNext()) {
                 // Get out of the queue
                 this.getOutOfLine();
