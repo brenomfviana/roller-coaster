@@ -29,9 +29,9 @@ During the execution of the program, the following actions must be performed for
 - passengers can not leave the car until the unload operation is performed by the car.
 - the time each passenger walks through the park before going back to the roller coaster is random and different to each run of the program.
 
-For readability purposes, the program shall display on the standard output the execution of each of the operations performed by the passengers and the car. The total number of passengers n, the capacity of car C, and the maximum number of P-trips that can be performed per day should be provided as input to the program as command line arguments. Case C <n, the program should issue an error message to the user and be immediately shut down.
+For readability purposes, the program shall display on the standard output the execution of each of the operations performed by the passengers and the car. The total number of passengers n, the capacity of car C, and the maximum number of P-trips that can be performed per day should be provided as input to the program as command line arguments. Case C < n, the program should issue an error message to the user and be immediately shut down.
 
 ## Members
 
-- Breno Maurício de Freitas Viana
-- Patrícia Pontes Cruz
+- Breno Maurício de Freitas Viana ([GitHub](https://github.com/brenov))
+- Patrícia Pontes Cruz ([GitHub](https://github.com/Pekorishia))
