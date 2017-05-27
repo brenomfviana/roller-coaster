@@ -1,31 +1,34 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore;
+package rollercoastersemaphore.rollercoaster;
 
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
+import rollercoastersemaphore.Passenger;
 
 /**
  * This class represents the Roller Coaster car.
  *
  * @author Patricia & Breno
  */
-public class Car {
+public class RollerCoasterCar {
 
     // Singleton
-    private static Car instance = new Car(4, 1);
+    private static RollerCoasterCar instance = new RollerCoasterCar();
 
-    // Maximum number of rides
-    private final int maximumNumberOfRides;
+    // Maximum Number of Rides
+    private final int MAX_NUMBER_OF_RIDES = 4;
+    // Capacity
+    private final int CAPACITY = 1;
+
     // Total number of rides daily
     private int totalRides;
-    // Car capacity
-    private final int capacity;
     // Is in moving
     private boolean moving;
     // Allow boarding
@@ -37,23 +40,24 @@ public class Car {
     // List of passengers
     private List<Passenger> passengers;
 
+    // Semaphore
+    private Semaphore semaphore;
+
     /**
      * Constructor.
-     *
-     * @param maximumNumberOfRides Maximum number of rides
-     * @param capacity Car capacity
      */
-    private Car(int maximumNumberOfRides, int capacity) {
+    private RollerCoasterCar() {
+        // Control variables
         this.totalRides = 0;
-        this.capacity = capacity;
-        this.maximumNumberOfRides = maximumNumberOfRides;
-        
+        // State variables
         this.ready = false;
         this.moving = false;
         this.allowBoarding = false;
         this.allowUnboarding = false;
-        
+        // Passengers
         this.passengers = new ArrayList<>();
+        // Initializes the semaphore
+        semaphore = new Semaphore(CAPACITY, true);
     }
 
     /**
@@ -61,7 +65,7 @@ public class Car {
      *
      * @return Instance of car
      */
-    public static Car getInstance() {
+    public static RollerCoasterCar getInstance() {
         return instance;
     }
 
@@ -71,6 +75,16 @@ public class Car {
      * @param passenger The passenger
      */
     public void addPassenger(Passenger passenger) {
+        // Try to enter the semaphore
+        try {
+            System.out.println("Passenger " + passenger.getID()
+                    + " requesting semaphore; Sem getQueueLength(): "
+                    + semaphore.getQueueLength());
+            semaphore.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         // Check if the car isn't full
         if (!this.isFull() && !this.passengers.contains(passenger)) {
             this.passengers.add(passenger);
@@ -90,16 +104,19 @@ public class Car {
      * @param passenger The passenger
      */
     public void removePassenger(Passenger passenger) {
+
+        // Release the semaphore
+        semaphore.release();
+        System.out.println("Passenger " + passenger.getID() + " releasing semaphore");
+
         // Check if the car in't empty
         if (!this.passengers.isEmpty()) {
             this.passengers.remove(passenger);
             System.out.println("Passenger " + passenger.getID() + " disembarked.");
             passenger.walk();
-            
-            
-            System.out.println("Passengers" + passengers);
             // Check if the car is empty
             if (this.passengers.isEmpty()) {
+                semaphore.availablePermits();
                 System.out.println("All passengers are gone; AllowUnboarding = false");
                 this.allowUnboarding = false;
             }
@@ -113,7 +130,7 @@ public class Car {
      *
      * @return True if the passenger is in the car false otherwise
      */
-    public boolean isInTheCar(Passenger passenger) {
+    public synchronized boolean isInTheCar(Passenger passenger) {
         return this.passengers.contains(passenger);
     }
 
@@ -122,7 +139,7 @@ public class Car {
      *
      * @return True if the car allows boarding and false otherwise
      */
-    public boolean isAllowBoarding() {
+    public synchronized boolean isAllowBoarding() {
         return this.allowBoarding;
     }
 
@@ -131,7 +148,7 @@ public class Car {
      *
      * @return True if the car allows unboarding and false otherwise
      */
-    public boolean isAllowUnboarding() {
+    public synchronized boolean isAllowUnboarding() {
         return this.allowUnboarding;
     }
 
@@ -140,7 +157,7 @@ public class Car {
      *
      * @return True if the car is ready and false otherwise
      */
-    public boolean isReady() {
+    public synchronized boolean isReady() {
         return this.ready;
     }
 
@@ -149,8 +166,8 @@ public class Car {
      *
      * @return True if the car is full and false otherwise
      */
-    public boolean isFull() {
-        return this.capacity == this.passengers.size();
+    public synchronized boolean isFull() {
+        return this.passengers.size() == this.CAPACITY;
     }
 
     /**
@@ -158,7 +175,7 @@ public class Car {
      *
      * @return True if the car is empty and false otherwise
      */
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return this.passengers.isEmpty();
     }
 
@@ -167,7 +184,7 @@ public class Car {
      *
      * @return True if the car is moving and false otherwise
      */
-    public boolean isMoving() {
+    public synchronized boolean isMoving() {
         return this.moving;
     }
 
@@ -176,7 +193,7 @@ public class Car {
      *
      * @return True if the car is stopped and false otherwise.
      */
-    public boolean isStopped() {
+    public synchronized boolean isStopped() {
         return !this.isMoving();
     }
 
@@ -187,14 +204,14 @@ public class Car {
      * @return True if the total number of rides is less than maximum number of
      * rides.
      */
-    public boolean isWorking() {
-        return this.maximumNumberOfRides > this.totalRides;
+    public synchronized boolean isInOperation() {
+        return this.MAX_NUMBER_OF_RIDES > this.totalRides;
     }
 
     /**
      * Allows passengers to board.
      */
-    public void load() {
+    public synchronized void load() {
         // Allow boarding
         this.allowBoarding = true;
         this.allowUnboarding = false;
@@ -204,20 +221,20 @@ public class Car {
     /**
      * Allows passengers to unboard.
      */
-    public void unload() {
+    public synchronized void unload() {
         // Allow unboarding
         this.allowUnboarding = true;
         this.allowBoarding = false;
         System.out.println("Unboarding...");
-        
+
     }
 
     /**
      * Run.
      */
-    public void run() {
+    public synchronized void run() {
         // Check if the car will still work
-        if (this.isWorking() && this.isReady()) {
+        if (this.isInOperation() && this.isReady()) {
             System.out.println("Passengers" + passengers);
             try {
                 // Starts moving
@@ -231,7 +248,7 @@ public class Car {
                 this.moving = false;
                 System.out.println("Ride ended.");
             } catch (InterruptedException ex) {
-                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
