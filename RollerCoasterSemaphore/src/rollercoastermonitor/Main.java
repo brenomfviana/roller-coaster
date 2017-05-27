@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore;
+package rollercoastermonitor;
 
 import java.util.List;
 import java.util.Random;
@@ -26,8 +26,7 @@ public class Main {
         // Passenger list
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        // for (int i = 0; i < ((new Random()).nextInt(1) + 1); i++) {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < ((new Random()).nextInt(10) + 15); i++) {
             passengers.add(new Passenger(i + 1, car));
         }
         // Runs passengers

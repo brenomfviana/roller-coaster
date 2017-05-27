@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore;
+package rollercoastermonitor;
 
 import java.util.Random;
 import java.util.logging.Level;

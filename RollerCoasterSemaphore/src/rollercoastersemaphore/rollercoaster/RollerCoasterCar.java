@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
-import rollercoastersemaphore.Passenger;
+import rollercoastermonitor.Passenger;
 
 /**
  * This class represents the Roller Coaster car.
@@ -264,12 +264,13 @@ public class RollerCoasterCar {
      */
     public void waitFull() {
         System.out.println("Waiting for the car to be full");
-        while (!this.isFull()){
+        while (!this.isFull()) {
             try {
-                //do nothing
+                // Do nothing
                 TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException ex) {
-                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
         System.out.println("The car is full");
@@ -280,12 +281,13 @@ public class RollerCoasterCar {
      */
     public void waitEmpty() {
         System.out.println("Waiting for the car to be empty");
-        while(!this.isEmpty()){
+        while (!this.isEmpty()) {
             try {
                 //do nothing
                 TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException ex) {
-                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
         System.out.println("The car is empty");
@@ -310,14 +312,16 @@ public class RollerCoasterCar {
                 this.moving = false;
                 System.out.println("Ride ended.");
             } catch (InterruptedException ex) {
-                Logger.getLogger(RollerCoasterCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RollerCoasterCar.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
     }
 
     @Override
     public String toString() {
-        return "RollerCoasterCar{" + "Max number of rides per day=" + MAX_NUMBER_OF_RIDES + ", Capacity of the car=" + CAPACITY + '}';
+        return "RollerCoasterCar{" + "Max number of rides per day = "
+                + this.MAX_NUMBER_OF_RIDES + ", Capacity of the car = "
+                + this.CAPACITY + '}';
     }
-    
 }
