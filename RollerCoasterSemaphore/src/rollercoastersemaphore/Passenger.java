@@ -35,6 +35,8 @@ public class Passenger implements Runnable {
         this.id = id;
         this.car = car;
         this.sem = sem;
+        
+        this.walk = false;
     }
 
     /**
@@ -76,6 +78,7 @@ public class Passenger implements Runnable {
      */
     public void board() {
         this.car.addPassenger(this);
+        
     }
 
     /**
@@ -94,9 +97,10 @@ public class Passenger implements Runnable {
             // If the passenger isn't on board and car allows boarding
             if (!this.isWalk() && !this.isOnBoard()
                     && this.car.isAllowBoarding()) {
-                
+                                
                 // Try to enter the semaphore
                 try {
+                    System.out.println("Passenger " + this.getID() + " requesting semaphore; Sem getQueueLength(): " + sem.getQueueLength());
                     sem.acquire();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Passenger.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,6 +116,7 @@ public class Passenger implements Runnable {
                 
                 // Release the semaphore
                 sem.release();
+                System.out.println("Passenger " + this.getID() + " releasing semaphore");
             }
             // Walk in the park
             else if (!this.isOnBoard() && this.isWalk()) {
@@ -128,6 +133,8 @@ public class Passenger implements Runnable {
             else if (!this.isOnBoard() && !this.car.isWorking()) {
                 System.out.println("Passenger " + this.getID() + " is leaving.");
                 break;
+            }
+            else {
             }
         }
     }

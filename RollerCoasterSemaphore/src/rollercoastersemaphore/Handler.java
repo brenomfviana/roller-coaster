@@ -12,14 +12,13 @@ import java.util.concurrent.Semaphore;
  * Roller Coaster handler.
  *
  * @author Breno Viana
- * @version 25/05/2017
  */
 public class Handler {
 
     // Roller Coaster car
     private static Car car = Car.getInstance();
     // Semaphore
-    private static Semaphore sem = new Semaphore(4,true);
+    private static Semaphore sem = new Semaphore(1,true);
 
     /**
      * Run.
@@ -28,7 +27,7 @@ public class Handler {
         // Passengers
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        for (int i = 0; i < ((new Random()).nextInt(1) + 5); i++) {
+        for (int i = 0; i < ((new Random()).nextInt(1) + 2); i++) {
             passengers.add(new Passenger(i + 1, car, sem));
         }
         // Runs passengers
@@ -43,19 +42,19 @@ public class Handler {
                 break;
             }
             // Unload
-            if (car.isStopped() && car.isFull() && !car.isReady()
-                    && !car.isAllowBoarding()) {
+            else if (car.isStopped() && car.isFull() && !car.isReady()
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
             }
             // Load
-            if (car.isWorking() && car.isStopped() && car.isEmpty()
-                    && !car.isReady() && !car.isAllowBoarding()) {
+            else if (car.isWorking() && car.isStopped() && !car.isReady()
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }
             // Run
-            if (car.isWorking() && car.isStopped() && car.isFull()
+            else if (car.isWorking() && car.isStopped() && car.isFull()
                     && car.isReady() && !car.isAllowUnboarding()) {
                 // Run the ride
                 car.run();

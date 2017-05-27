@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Car {
 
     // Singleton
-    private static Car instance = new Car(4, 4);
+    private static Car instance = new Car(4, 1);
 
     // Maximum number of rides
     private final int maximumNumberOfRides;
@@ -77,6 +77,7 @@ public class Car {
             System.out.println("Passenger " + passenger.getID() + " is on board.");
             // Check if the car full
             if (this.isFull()) {
+                System.out.println("The car is full; AllowBoarding = false; Ready = true");
                 this.allowBoarding = false;
                 this.ready = true;
             }
@@ -94,8 +95,12 @@ public class Car {
             this.passengers.remove(passenger);
             System.out.println("Passenger " + passenger.getID() + " disembarked.");
             passenger.walk();
+            
+            
+            System.out.println("Passengers" + passengers);
             // Check if the car is empty
             if (this.passengers.isEmpty()) {
+                System.out.println("All passengers are gone; AllowUnboarding = false");
                 this.allowUnboarding = false;
             }
         }
@@ -191,8 +196,9 @@ public class Car {
      */
     public void load() {
         // Allow boarding
-        System.out.println("Boarding...");
         this.allowBoarding = true;
+        this.allowUnboarding = false;
+        System.out.println("Boarding...");
     }
 
     /**
@@ -200,8 +206,10 @@ public class Car {
      */
     public void unload() {
         // Allow unboarding
-        System.out.println("Unboarding...");
         this.allowUnboarding = true;
+        this.allowBoarding = false;
+        System.out.println("Unboarding...");
+        
     }
 
     /**
