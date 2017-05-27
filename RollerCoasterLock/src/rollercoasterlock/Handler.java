@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore;
+package rollercoasterlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,6 @@ public class Handler {
 
     // Roller Coaster car
     private static Car car = Car.getInstance();
-    // Semaphore
-    private static Semaphore sem = new Semaphore(4,true);
 
     /**
      * Run.
@@ -28,8 +26,8 @@ public class Handler {
         // Passengers
         List<Passenger> passengers = new ArrayList<>();
         // Creates the passengers
-        for (int i = 0; i < ((new Random()).nextInt(1) + 5); i++) {
-            passengers.add(new Passenger(i + 1, car, sem));
+        for (int i = 0; i < ((new Random()).nextInt(10) + 10); i++) {
+            passengers.add(new Passenger(i + 1, car));
         }
         // Runs passengers
         passengers.stream().map((passenger) -> new Thread(passenger)).forEach((t) -> {
@@ -44,13 +42,13 @@ public class Handler {
             }
             // Unload
             else if (car.isStopped() && car.isFull() && !car.isReady()
-                    && !car.isAllowBoarding()) {
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
             }
             // Load
             else if (car.isWorking() && car.isStopped() && !car.isReady()
-                    && !car.isAllowBoarding()) {
+                    && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
             }

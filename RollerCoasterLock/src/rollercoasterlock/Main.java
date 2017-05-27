@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore;
+package rollercoasterlock;
 
 /**
  *
