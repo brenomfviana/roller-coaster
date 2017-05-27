@@ -40,12 +40,16 @@ public class RollerCoasterHandler {
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow unboarding
                 car.unload();
+                // Wait for the car to be empty 
+                car.waitEmpty();
             }
             // Check whether the car can allow boarding
             if (car.isInOperation() && car.isStopped() && !car.isReady()
                     && !car.isAllowBoarding() && !car.isAllowUnboarding()) {
                 // Allow boarding
                 car.load();
+                // Wait for the car to be full 
+                car.waitFull();
             }
             // Check if the car can run
             if (car.isInOperation() && car.isStopped() && car.isFull()

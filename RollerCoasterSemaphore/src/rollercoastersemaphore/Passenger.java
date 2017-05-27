@@ -75,15 +75,43 @@ public class Passenger implements Runnable {
         this.car.removePassenger(this);
     }
 
+    /**
+     * Get true if the passenger is the next to board the car and false
+     * otherwise.
+     *
+     * @return True if the passenger is the next to board the car false
+     * otherwise
+     */
+    public boolean isNext() {
+        return this.car.nextPassenger() == this;
+    }
+
+    /**
+     * Get this passenger out of line.
+     */
+    public void getOutOfLine() {
+        // Check if the passenger is the next
+        if (this.isNext()) {
+            this.car.removePassengerFromTheQueue(this);
+        }
+    }
+
     @Override
     public void run() {
         // Print passenger
         System.out.println(this.toString());
         // While the car is working
         while (true) {
+            // If the passenger isn't walking, isn't on board and isn't in line
+            if (!this.isWalk() && !this.isOnBoard() && !this.car.isInLine(this)) {
+                this.car.addPassengerToQueue(this);
+            }
             // If the passenger isn't walking, isn't on board, there's no line,
             // car allows boarding and this passenger is the next
-            if (!this.isWalk() && !this.isOnBoard() && this.car.isAllowBoarding()) {
+            if (!this.isWalk() && !this.isOnBoard() && !this.car.lineIsEmpty()
+                    && this.car.isAllowBoarding() && this.isNext()) {
+                // Get out of the queue
+                this.getOutOfLine();
                 // Board the car
                 this.board();
             }
