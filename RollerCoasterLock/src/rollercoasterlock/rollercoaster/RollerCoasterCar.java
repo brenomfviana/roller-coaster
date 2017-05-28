@@ -24,13 +24,19 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class RollerCoasterCar {
 
+    // Maximum Number of Rides
+    private static final int MAX_NUMBER_OF_RIDES = 4;
+    // Capacity
+    private static final int CAPACITY = 4;
+
     // Singleton
-    private static RollerCoasterCar instance = new RollerCoasterCar();
+    private static RollerCoasterCar instance
+            = new RollerCoasterCar(MAX_NUMBER_OF_RIDES, CAPACITY);
 
     // Maximum Number of Rides
-    private final int MAX_NUMBER_OF_RIDES = 4;
+    private final int maxNumberOfRides;
     // Capacity
-    private final int CAPACITY = 4;
+    private final int capacity;
 
     // Total number of rides daily
     private int totalRides;
@@ -54,9 +60,14 @@ public class RollerCoasterCar {
 
     /**
      * Constructor.
+     *
+     * @param maxNumberOfRides Maximum number of rides
+     * @param capacity Car capacity
      */
-    private RollerCoasterCar() {
+    private RollerCoasterCar(int maxNumberOfRides, int capacity) {
         // Control variables
+        this.maxNumberOfRides = maxNumberOfRides;
+        this.capacity = capacity;
         this.totalRides = 0;
         // State variables
         this.ready = false;

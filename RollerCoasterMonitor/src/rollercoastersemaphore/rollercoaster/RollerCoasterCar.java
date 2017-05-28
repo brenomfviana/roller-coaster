@@ -20,13 +20,19 @@ import rollercoastermonitor.Passenger;
  */
 public class RollerCoasterCar {
 
+    // Maximum Number of Rides
+    private static final int MAX_NUMBER_OF_RIDES = 4;
+    // Capacity
+    private static final int CAPACITY = 4;
+
     // Singleton
-    private static RollerCoasterCar instance = new RollerCoasterCar();
+    private static RollerCoasterCar instance
+            = new RollerCoasterCar(MAX_NUMBER_OF_RIDES, CAPACITY);
 
     // Maximum Number of Rides
-    private final int MAX_NUMBER_OF_RIDES = 4;
+    private final int maxNumberOfRides;
     // Capacity
-    private final int CAPACITY = 4;
+    private final int capacity;
 
     // Total number of rides daily
     private int totalRides;
@@ -45,9 +51,14 @@ public class RollerCoasterCar {
 
     /**
      * Constructor.
+     * 
+     * @param maxNumberOfRides Maximum number of rides
+     * @param capacity Car capacity
      */
-    private RollerCoasterCar() {
+    private RollerCoasterCar(int maxNumberOfRides, int capacity) {
         // Control variables
+        this.maxNumberOfRides = maxNumberOfRides;
+        this.capacity = capacity;
         this.totalRides = 0;
         // State variables
         this.ready = false;
@@ -200,7 +211,7 @@ public class RollerCoasterCar {
      * @return True if the car is full and false otherwise
      */
     public boolean isFull() {
-        return this.passengers.size() == this.CAPACITY;
+        return this.passengers.size() == this.capacity;
     }
 
     /**
@@ -238,7 +249,7 @@ public class RollerCoasterCar {
      * rides.
      */
     public synchronized boolean isInOperation() {
-        return this.MAX_NUMBER_OF_RIDES > this.totalRides;
+        return this.maxNumberOfRides > this.totalRides;
     }
 
     /**
@@ -321,7 +332,7 @@ public class RollerCoasterCar {
     @Override
     public String toString() {
         return "RollerCoasterCar{" + "Max number of rides per day = "
-                + this.MAX_NUMBER_OF_RIDES + ", Capacity of the car = "
-                + this.CAPACITY + '}';
+                + this.maxNumberOfRides + ", Capacity of the car = "
+                + this.capacity + '}';
     }
 }
