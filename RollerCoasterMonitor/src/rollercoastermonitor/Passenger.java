@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
-import rollercoastersemaphore.rollercoaster.RollerCoasterCar;
+import rollercoastermonitor.rollercoaster.RollerCoasterCar;
 
 /**
  * This class represents the Roller Coaster passenger.

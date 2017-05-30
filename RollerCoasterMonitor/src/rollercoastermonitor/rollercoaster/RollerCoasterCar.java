@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore.rollercoaster;
+package rollercoastermonitor.rollercoaster;
 
 import java.util.List;
 import java.util.Queue;

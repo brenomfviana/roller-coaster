@@ -6,8 +6,8 @@ package rollercoastermonitor;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
-import rollercoastersemaphore.rollercoaster.RollerCoasterCar;
-import rollercoastersemaphore.rollercoaster.RollerCoasterHandler;
+import rollercoastermonitor.rollercoaster.RollerCoasterCar;
+import rollercoastermonitor.rollercoaster.RollerCoasterHandler;
 
 /**
  * This is the main class of Roller Coaster.

@@ -1,7 +1,7 @@
 /*
  * GNU License.
  */
-package rollercoastersemaphore.rollercoaster;
+package rollercoastermonitor.rollercoaster;
 
 /**
  * Roller Coaster handler.
