@@ -48,7 +48,7 @@ To compile enter the following command:
 
 To generate the jar executable run the following command:
 
-    jar cfm RollerCoasterMonitor.jar manifest.mf src/rollercoasterlock/*.class src/rollercoasterlock/rollercoaster/*.class
+    jar cfm RollerCoasterMonitor.jar manifest.mf src/rollercoastermonitor/*.class src/rollercoastermonitor/rollercoaster/*.class
 
 #### How to run
 
