@@ -33,15 +33,18 @@ For readability purposes, the program shall display on the standard output the e
 
 ## Compiling and Running
 
-We usually use an IDE (like NetBeans or Eclipse) to compile and build the program, but if you can use the following commands.
+We usually use an IDE (like NetBeans or Eclipse) to compile and build the program, but if you want to compile via terminal use the following commands.
 
 ### Roller Coaster Monitor
+
+Open the project folder:
+
+    cd RollerCoasterMonitor
 
 #### How to compile
 
 To compile enter the following command:
 
-    cd RollerCoasterMonitor
     javac src/rollercoastermonitor/*.java src/rollercoastermonitor/rollercoaster/*.java
 
 #### How to generate executable
@@ -56,11 +59,14 @@ To generate the jar executable run the following command:
 
 ### Roller Coaster Lock
 
+Open the project folder:
+
+    cd RollerCoasterLock
+
 #### How to compile
 
 To compile enter the following command:
 
-    cd RollerCoasterLock
     javac src/rollercoasterlock/*.java src/rollercoasterlock/rollercoaster/*.java
 
 #### How to generate executable
