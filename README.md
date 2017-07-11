@@ -79,7 +79,8 @@ To generate the jar executable run the following command:
 
     java -jar RollerCoasterLock.jar
 
-## Members
+## Team
 
-- Breno Maurício de Freitas Viana ([GitHub](https://github.com/brenov))
-- Patrícia Pontes Cruz ([GitHub](https://github.com/Pekorishia))
+[![Breno Viana](https://avatars2.githubusercontent.com/u/17532418?v=3&u=46e9d47c495080fd08dc336d0767f76a57a7644b&s=100)](https://github.com/brenov) | [<img src="https://avatars2.githubusercontent.com/u/17392686?v=3&s=400" width="100"/>](https://github.com/Pekorishia)
+---|---
+[Breno Viana](https://github.com/brenov) | [Patrícia Cruz](https://github.com/Pekorishia)
