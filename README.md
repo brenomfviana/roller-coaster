@@ -35,6 +35,10 @@ For readability purposes, the program shall display on the standard output the e
 
 We usually use an IDE (like NetBeans or Eclipse) to compile and build the program, but if you want to compile via terminal use the following commands.
 
+### Dependencies
+
+- Java 8.0 or greater
+
 ### Roller Coaster Monitor
 
 Open the project folder:
@@ -45,18 +49,21 @@ cd RollerCoasterMonitor
 
 #### How to compile
 
-To compile enter the following command:
+Run the following commands:
 
 ```bash
-javac src/rollercoastermonitor/*.java src/rollercoastermonitor/rollercoaster/*.java
+./make.sh
 ```
 
-#### How to generate executable
+##### ```make.sh``` content
 
-To generate the jar executable run the following command:
-
-```bash
-jar cfm RollerCoasterMonitor.jar manifest.mf src/rollercoastermonitor/*.class src/rollercoastermonitor/rollercoaster/*.class
+```sh
+#!/bin/bash
+cd src
+# Compile
+javac rollercoastermonitor/*.java rollercoastermonitor/rollercoaster/*.java
+# Generate jar
+jar cfm ../RollerCoasterMonitor.jar ../manifest.mf rollercoastermonitor/*.class rollercoastermonitor/rollercoaster/*.class
 ```
 
 #### How to run
@@ -75,18 +82,21 @@ cd RollerCoasterLock
 
 #### How to compile
 
-To compile enter the following command:
+Run the following commands:
 
 ```bash
-javac src/rollercoasterlock/*.java src/rollercoasterlock/rollercoaster/*.java
+./make.sh
 ```
 
-#### How to generate executable
+##### ```make.sh``` content
 
-To generate the jar executable run the following command:
-
-```bash
-jar cfm RollerCoasterLock.jar manifest.mf src/rollercoasterlock/*.class src/rollercoasterlock/rollercoaster/*.class
+```sh
+#!/bin/bash
+cd src
+# Compile
+javac rollercoasterlock/*.java rollercoasterlock/rollercoaster/*.java
+# Generate jar
+jar cfm ../RollerCoasterLock.jar ../manifest.mf rollercoasterlock/*.class rollercoasterlock/rollercoaster/*.class
 ```
 
 #### How to run
